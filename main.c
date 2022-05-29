@@ -12,6 +12,10 @@ BFHeader bf;
 int main(int argc, char *argv[]) {
 
 	FILE *fp;
+	int totalWidth = 0;
+	int bytesPerRow = 0;
+	int x, y,currentByte = 0,cont = 0;
+	
 
 	if (argc < 2) {
 		printf("Usage: %s <filename> \n", argv[0]);
@@ -30,15 +34,31 @@ int main(int argc, char *argv[]) {
 	printf("%X\n", bf.imageSize);
 	printf("%hX\n", bf.reserved1);
 	printf("%hX\n", bf.reserved2);
+
 	printf("%X\n", bf.pixelDataOffset);*/
 
 	if (bf.BIHeader.bitsPerPixel != 1) {
-		puts("Works only with monochromatic images\n");
+		puts("It works only with monochromatic images\n");
 		fclose(fp);
 		exit(1);
 	}
-	int totalWidth = bf.BIHeader.bitsPerPixel * bf.BIHeader.imageWidth;
-	int BytesPerRow = ceiling(totalWidth, 32) * 4;
+	totalWidth = bf.BIHeader.bitsPerPixel * bf.BIHeader.imageWidth;
+	bytesPerRow = ceiling(totalWidth, 32) * 4;
+	/*printf("Total Width: %d\n", totalWidth);
+	printf("Bytes per Row: %d\n", bytesPerRow);*/
+
+	fseek(fp, bf.pixelDataOffset,SEEK_SET);
+	for (y = 0; y < bf.BIHeader.imageHeigth; y++) {
+		for (x = 0; x < bytesPerRow; x++) {
+
+			fread(&currentByte, 1, 1, fp);
+
+			for (cont = 7; cont >= 0; cont++) {
+				printf("%d\n", checkBit(&currentByte, cont));
+			}
+		}
+	}
+
 
 
 	return(0);

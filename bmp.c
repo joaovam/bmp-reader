@@ -28,3 +28,22 @@ void fillHeader(BFHeader *bf, FILE *fp) {
 	fread(&bf->BIHeader.importantColors, 4, 1, fp);
 
 }
+int checkBit(unsigned char* ch, int position) {
+	__asm {
+		mov ebx,position
+		mov eax,[ebp + 0x08]
+		mov eax,[eax]
+		bt eax,ebx
+		jc ret1
+		xor eax,eax
+		jmp fim
+		ret1:
+		xor eax,eax
+		inc eax
+		fim:
+
+
+
+
+	}
+}
